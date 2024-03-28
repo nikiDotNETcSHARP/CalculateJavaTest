@@ -76,7 +76,22 @@ class Main
             default:
                 throw new Exception("Неверно введен оператор вычисления!");
         }
-        return isRoman ? arabicToRoman(result) : String.valueOf(result);
+
+        if (isRoman)
+        {
+            if (result < 1)
+            {
+                throw new Exception("Результат воздействия на римские числа не должен быть меньше единицы!");
+            }
+            else
+            {
+                return arabicToRoman(result);
+            }
+        }
+        else
+        {
+            return String.valueOf(result);
+        }
     }
 
     private static boolean isRomanNumeral(String s)
@@ -84,7 +99,7 @@ class Main
         return s.matches("^(?=[MDCLXVI])M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[XV]|V?I{0,3})$");
     }
 
-    private static int romanToArabic(String roman)
+    private static int romanToArabic(String roman) throws Exception
     {
         int result = 0;
 
@@ -120,47 +135,29 @@ class Main
             case "X":
                 result = 10;
                 break;
+            default:
+                throw new Exception("Неверный римский числовой символ! Числа должны быть в диапазоне " +
+                        "от 1 до 10 включительно!");
         }
         return result;
     }
 
     private static String arabicToRoman(int arabic)
     {
-        String result = null;
+        String[] romanNumerals = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        int[] values = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
 
-        switch(arabic)
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < values.length; i++)
         {
-            case 1:
-                result = "I";
-                break;
-            case 2:
-                result = "II";
-                break;
-            case 3:
-                result = "III";
-                break;
-            case 4:
-                result = "IV";
-                break;
-            case 5:
-                result = "V";
-                break;
-            case 6:
-                result = "VI";
-                break;
-            case 7:
-                result = "VII";
-                break;
-            case 8:
-                result = "VIII";
-                break;
-            case 9:
-                result = "IX";
-                break;
-            case 10:
-                result = "X";
-                break;
+            while(arabic >= values[i])
+            {
+                result.append(romanNumerals[i]);
+                arabic -= values[i];
+            }
         }
-        return result;
+
+        return result.toString();
     }
 }
